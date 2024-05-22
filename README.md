@@ -1,3 +1,5 @@
+**Characterizing Dynamic Functional Connectivity Subnetwork Contributions in Narrative Classification with Shapley Values**
+
 This repository contains the code for the paper "Characterizing Dynamic Functional Connectivity Subnetwork Contributions in Narrative Classification with Shapley Values" submitted to NeurIPS 2024.
 
 The repository is organized as follows:
