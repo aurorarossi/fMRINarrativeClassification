@@ -1,4 +1,4 @@
-import nibabel as nib
+jimport nibabel as nib
 from nilearn import datasets
 from nilearn import image
 import numpy as np
