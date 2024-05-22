@@ -1,4 +1,3 @@
-import matplotlib.pyplot as plt
 import nibabel as nib
 from nilearn import datasets
 from nilearn import image
