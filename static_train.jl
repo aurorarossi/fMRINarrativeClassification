@@ -19,6 +19,17 @@ function readgraphs_AR!(g, graphs, labels, k, numberschema, numbersubject)
     return graphs, labels, k
 end
 
+function readgraphs_4C!(g, graphs, labels, k, numberschema, numbersubject)
+    datal = readdlm("files/airport_restaurant_labels/$(numbersubject)_schema-0$(numberschema)_events.txt")[1]
+    for i in 0:3
+        graphs[:, :, :, 1, k] = g[:, :, i+1]
+        labels[:, k] = Flux.onehot(datal[i+1] * (i % 2 == 0 ? 'M' : 'S'), ["AM", "AS", "RM", "RS"])
+        k += 1
+    end
+    return graphs, labels, k
+end
+
+
 function load_schema_dataset(; classification)
     names = load_names_file()
     graphs = zeros(100, 100, 1, 1, 496)
@@ -42,7 +53,7 @@ function load_schema_dataset(; classification)
     return graphs, labels
 end
 
-using CUDA, Statistics, Random
+using CUDA, Statistics, Random, JLD2
 include("utils.jl")
 include("src/model.jl")
 
@@ -61,12 +72,12 @@ function train(model, d; numberofepochs=50, trainloader, onetrainloader, onetest
             end
             Flux.update!(opt, model, grads[1])
         end
-        if epoch % 5 == 0
-             stats = report(epoch, model, onetrainloader, onetestloader, lossfunction)
-        end
+        # if epoch % 5 == 0
+        #      stats = report(epoch, model, onetrainloader, onetestloader, lossfunction)
+        # end
         if epoch == numberofepochs
             stats = report(epoch, model, onetrainloader, onetestloader, lossfunction)
-           # push!(d["MODEL"], stats[end])
+           push!(d["MODEL"], stats[end])
         end
     end
 
@@ -81,8 +92,8 @@ end
     d = Dict{String,Any}()
     d["MODEL"] = []
 
-    #for i in 1:15
-    model = create_model(1, 8; classification="MA")
+    for i in 1:15
+    model = create_model(1, 8; classification="AR")
     model = model |> gpu
 
     
@@ -100,10 +111,7 @@ end
         onetestloader = onetestloader |> gpu
         Flux.reset!(model)
 
-        model, d = train(model, d; numberofepochs=50, trainloader=trainloader, onetrainloader=onetrainloader, onetestloader=onetestloader)
+        model, d = train(model, d; numberofepochs=20, trainloader=trainloader, onetrainloader=onetrainloader, onetestloader=onetestloader)
         
-
- 
-
-    
-  
+    end
+        JLD2.@save "/user/aurossi/home/fMRINarrativeClassification/static_FC/data/train_airportrestaurant.jld2" d
