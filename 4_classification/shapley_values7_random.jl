@@ -30,19 +30,21 @@ function train(model, d; numberofepochs=50, trainloader, onetrainloader, onetest
     return model, d
 end
 
-function compute_shapley_values(model, d, namesnetworks7, testtomask)
-    r1 = [8, 12, 19, 85, 25, 21, 13, 36, 78, 43, 41, 84, 73, 15, 79, 6, 75]
-    r2 = [9, 22, 47, 76, 52, 86, 70, 64, 56, 94, 72, 45, 96, 29]
-    r3 = [92, 20, 24, 51, 44, 74, 31, 87, 48, 60, 35, 98, 65, 88, 57]
-    r4 = [59, 89, 10, 63, 80, 28, 95, 32, 16, 4, 42, 77]
-    r5 = [67, 39, 62, 3, 58]
-    r6 =[49, 53, 100, 69, 61, 18, 83, 26, 93, 38, 82, 90, 2]
-    r7 = [33, 66, 30, 81, 68, 40, 7, 17, 37, 11, 99, 97, 55, 23, 14, 1, 46, 5, 27, 54, 71, 50, 91, 34]
-   
+function create_random_parcellation()
+    sizes = [17,14, 15,12,5,13,24]
+    torem = []
+    networks7 = []
+    for i in 1:7
+         r =sample(setdiff(1:100,torem), sizes[i], replace=false)
+         push!(networks7, r)
+         push!(torem, r...)
+    end
+    return networks7
+end
 
-
-    networks7 = [r1, r2, r3, r4, r5, r6, r7]
-
+function compute_shapley_values(model, d,networks7, namesnetworks7, testtomask)
+    
+    
     testtomaskdeepcopy = deepcopy(testtomask[1])
     for (i, name) in enumerate(namesnetworks7)
         shap = shaply_value_of_i(networks7[i], model, networks7, testtomask, testtomaskdeepcopy)
@@ -54,15 +56,17 @@ end
 
 
 graphs, labels = load_schema_dataset(classification="4C")
-
+for p in 1:9
 d = Dict{String,Any}()
 d["MODEL"] = []
 namesnetworks7 = ("r1", "r2", "r3", "r4", "r5", "r6", "r7")
+
 for i in 1:7
     d[namesnetworks7[i]] = []
 end
 
 testtomask = (graphs[:, :, :, :, 401:end], labels[:, 401:end])
+networks7 = create_random_parcellation()
 
 for i in 1:15
     global d, graphs, labels, testtomask
@@ -81,9 +85,10 @@ for i in 1:15
     model, d = train(model, d; numberofepochs=20, trainloader=trainloader, onetrainloader=onetrainloader, onetestloader=onetestloader)
  
     model = model |> cpu
-    d = compute_shapley_values(model, d, namesnetworks7, testtomask)
+    d = compute_shapley_values(model, d,networks7, namesnetworks7, testtomask)
 end
-jldsave("4_classification/data/shapleyvalues10random_15retraining.jld2"; d)
+jldsave("4_classification/data/shapleyvalues10random_15retraining_$(p).jld2"; d)
+emd
 
 # sizes = [17, 14, 15,12,5,13,24]
 # torem = []
