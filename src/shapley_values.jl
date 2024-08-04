@@ -1,4 +1,4 @@
-using Combinatorics
+using Combinatorics, Random
 include("../utils.jl")
 
 function mask(mygraph, maskedregions)
