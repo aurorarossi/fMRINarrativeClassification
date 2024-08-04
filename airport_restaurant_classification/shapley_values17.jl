@@ -1,7 +1,7 @@
-using CUDA, Statistics, JLD2
-include("utils.jl")
-include("src/model.jl")
-include("src/shapley_values.jl")
+using CUDA, Statistics, JLD2, Random
+include("../utils.jl")
+include("../src/model.jl")
+include("../src/shapley_values.jl")
 
 function train(model, d; numberofepochs=50, trainloader, onetrainloader, onetestloader)
 
@@ -53,7 +53,7 @@ function compute_shapley_values(model, d, namesnetworks17, testtomask)
 
     testtomaskdeepcopy = deepcopy(testtomask[1])
     for (i, name) in enumerate(namesnetworks17)
-        shap = approximate_shaply_value_of_i(i, model, networks17, testtomask, testtomaskdeepcopy,100)
+        shap = approximate_shaply_value_of_i(i, model, networks17, testtomask, testtomaskdeepcopy,500)
         println(shap)
         push!(d[name], shap)
     end
@@ -87,6 +87,6 @@ for i in 1:15
     model = model |> cpu
     d = compute_shapley_values(model, d, namesnetworks17, testtomask)
 end
-jldsave("airport_restaurant_classification/data/shapleyvalues17_15retraining.jld2"; d)
+jldsave("airport_restaurant_classification/data/shapleyvalues17_15retraining_500sample.jld2"; d)
 
 
