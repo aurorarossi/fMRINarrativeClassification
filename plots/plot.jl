@@ -63,3 +63,90 @@ function shapvalues17_plot(data,title,format)
 
     return p
 end
+
+function shapvalues100_plot(data,title,format)
+    vis = vcat(0:8, 50:57) .+ 1
+    somot = vcat(9:14, 58:65) .+ 1
+    dorsattn = vcat(15:22, 66:72) .+ 1
+    ventattn = vcat(23:29, 73:77) .+ 1
+    limbic = vcat(30:32, 78:79) .+ 1
+    control = vcat(33:36, 80:88) .+ 1
+    default = vcat(37:49, 89:99) .+ 1
+
+    palette = reverse(categorical_colors(:Paired_7, 7))
+
+    region_to_subnetwork = fill(:unknown, 100)
+region_to_subnetwork[vis] .= :vis
+region_to_subnetwork[somot] .= :somot
+region_to_subnetwork[dorsattn] .= :dorsattn
+region_to_subnetwork[ventattn] .= :ventattn
+region_to_subnetwork[limbic] .= :limbic
+region_to_subnetwork[control] .= :control
+region_to_subnetwork[default] .= :default
+
+subnetwork_colors = Dict(
+    :vis => palette[2],
+    :somot => palette[1],
+    :dorsattn => palette[3],
+    :ventattn => palette[4],
+    :limbic => palette[5],
+    :control => palette[7],
+    :default => palette[6],
+    :unknown => :gray
+)
+
+
+    CairoMakie.activate!(type = format)
+    data = data["d"]
+    networks = [string(i) for i in 1:100]
+    networks_real_names = [string(i) for i in 1:100]
+
+    mean_values = Dict()
+    for key in networks
+        mean_values[key] = mean(data[key])
+    end
+
+    std_values = Dict()
+    for key in networks
+        std_values[key] = std(data[key])
+    end
+    shapvalues = [mean_values[string(i)] for i in 1:100]
+
+    std_values = [std_values[string(i)] for i in 1:100]
+
+    permsort = sortperm(shapvalues, rev = true)
+
+    region_colors = [subnetwork_colors[region_to_subnetwork[i]] for i in permsort]
+    fontsize_theme = Theme(fontsize=20)
+    set_theme!(fontsize_theme)
+    fig = Figure(size = (1400, 600))
+    
+    # Create a subplot for the main plot
+    ax = Axis(fig[1, 1], title = title, xticks = (1:100, networks_real_names[permsort]), 
+              yticks = (0:1:6, [L"0", L"1", L"2", L"3", L"4", L"5", L"6"]),
+              xticklabelrotation = pi/2, xticklabelsize = 12, xlabel = L"Schaefer brain regions$$", ylabel = L"Shapley Value$$")
+    
+    barplot!(ax, shapvalues[permsort], color = region_colors)
+    errorbars!(ax, collect(1:100), shapvalues[permsort], std_values, whiskerwidth = 10, color = :black)
+
+    # Create a subplot for the scatter plot and text labels
+    ax_legend = Axis(fig[1, 2], xautolimitmargin = (0, 0), yautolimitmargin = (0.1, 0.1), tellwidth = true, width=350)
+    hidedecorations!(ax_legend)
+    hidespines!(ax_legend)
+
+    legend_labels = [L"Visual$$", L"Somatomotor$$", L"Dorsal Attention$$", L"Ventral Attention$$", L"Limbic$$", L"Control$$", L"Default$$"]
+    legend_colors = [subnetwork_colors[:vis], subnetwork_colors[:somot], subnetwork_colors[:dorsattn], subnetwork_colors[:ventattn], subnetwork_colors[:limbic], subnetwork_colors[:control], subnetwork_colors[:default]]
+
+        for (i, label) in enumerate(legend_labels)
+        scatter!(ax_legend, [0.1], [-i], color = legend_colors[i], markersize = 15)  # Reduce marker size
+        text!(ax_legend, [0.1], [-i], text = label, align=(:left,:center), offset = (10,0) )  # Adjust label position
+    end
+
+    display(fig)
+    display(fig)
+
+
+
+
+    return fig
+end
