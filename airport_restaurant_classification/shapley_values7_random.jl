@@ -68,7 +68,7 @@ end
 testtomask = (graphs[:, :, :, :, 401:end], labels[:, 401:end])
 networks7 = create_random_parcellation()
 for i in 1:15
-    global d, graphs, labels, testtomask
+    #global d, graphs, labels, testtomask
     model = create_model(8, 1; classification="AR")
     model = model |> gpu
     
