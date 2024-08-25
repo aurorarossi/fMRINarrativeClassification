@@ -57,7 +57,7 @@ end
 
 graphs, labels = load_schema_dataset(classification="MA")
 
-for p in 1:9
+for p in 10:10
 d = Dict{String,Any}()
 d["MODEL"] = []
 namesnetworks7 = ("r1", "r2", "r3", "r4", "r5", "r6", "r7")
@@ -86,7 +86,7 @@ for i in 1:15
     model = model |> cpu
     d = compute_shapley_values(model, d,networks7, namesnetworks7, testtomask)
 end
-jldsave("movie_audio_classification/data/shapleyvalues10random_15retraining_$(p).jld2"; d)
+jldsave("movie_audio_classification/data/shapleyvalues7random_15retraining_$(p).jld2"; d)
 end
 
 
