@@ -1,22 +1,26 @@
-jimport nibabel as nib
+import nibabel as nib
 from nilearn import datasets
 from nilearn import image
 import numpy as np
 from scipy import signal
 from scipy import stats
 import seaborn as sea
+#computing time
+import time
 
 
-names = np.loadtxt("to_process_schema4.txt", dtype="str")
+
+names = np.loadtxt("files/to_process/to_process_schema1.txt", dtype="str")
 
 # Load atlas
 
-loaded_atlas = nib.load("Desikan_space-MNI152NLin6_res-2x2x2.nii")
+loaded_atlas = nib.load("scripts_network_creation/Desikan_space-MNI152NLin6_res-2x2x2.nii")
 atlas = loaded_atlas.get_fdata()
 b,a = signal.butter(1, [0.01,0.08], btype='bandpass',output='ba' )
 
 for name in names:
     print(name)
+    starttime = time.time()
     # Load subject
     sub_file = f"/data/cronos/share/bids/narratives-dominey/derivatives/{name}.nii.gz"
     sub = nib.load(sub_file)
@@ -33,7 +37,7 @@ for name in names:
     timeseries=[]
     label0=[]
     l=0
-    for h in range(70):
+    for h in range(1,71):
         for i in range(atlas.shape[0]):
             for j in range(atlas.shape[1]):
                 for k in range(atlas.shape[2]):
@@ -52,3 +56,5 @@ for name in names:
     
 
     np.save(f"timeseries/schema-run4-100/{c}_timeseries_desikan.npy",timeseries)
+    endtime = time.time()
+    print(f"time elapsed: {endtime-starttime}")
