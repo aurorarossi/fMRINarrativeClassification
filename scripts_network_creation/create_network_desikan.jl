@@ -1,11 +1,11 @@
 using NPZ, Statistics, DelimitedFiles
 
-names = readdlm("files/to_process/to_process_schema4.txt")
+names = readdlm("files/to_process/to_process_schema1.txt")
 for l in 1:length(names)
     println(names[l])
     name = names[l]
     _,_,c = split(name,"/")
-    timeseries = npzread("timeseries/schema-run4-100/$(c)_timeseries_desikan.npy")
+    timeseries = npzread("timeseries/schema-run1-100/$(c)_timeseries_desikan.npy")
 
     T = 20
     num_regions = 70
