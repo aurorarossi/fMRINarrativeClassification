@@ -1,11 +1,11 @@
 using NPZ, Statistics, DelimitedFiles
 
-names = readdlm("files/to_process/to_process_schema4.txt")
+names = readdlm("files/to_process/to_process_schema3.txt")
 for l in 1:length(names)
     println(names[l])
     name = names[l]
     _,_,c = split(name,"/")
-    timeseries = npzread("timeseries/schema-run4-100/$(c)_timeseries_destrieux.npy")
+    timeseries = npzread("timeseries/schema-run3-100/$(c)_timeseries_destrieux.npy")
 
     T = 20
     num_regions = 75
@@ -18,11 +18,15 @@ for l in 1:length(names)
         global k
         for i in 1:num_regions
             for j in 1:num_regions
-                network[i,j,k]=cor(timeseries[i,t:t+T], timeseries[j,t:t+T])
+                if i == 42 || j == 42
+                    continue
+                else
+                    network[i,j,k]=cor(timeseries[i,t:t+T], timeseries[j,t:t+T])
+                end
             end
         end
         k+=1
     end
 
-    npzwrite("data/desikan/$(c)_network_destrieux.npy", network)
+    npzwrite("data/destrieux/$(c)_network_destrieux.npy", network)
 end

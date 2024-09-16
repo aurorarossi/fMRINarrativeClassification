@@ -5,7 +5,7 @@ include("../src/shapley_values.jl")
 
 function train(model, d; numberofepochs=50, trainloader, onetrainloader, onetestloader)
 
-    lossfunction(ŷ, y) = Flux.logitbinarycrossentropy(ŷ, y)
+    lossfunction(ŷ, y) = Flux.logitcrossentropy(ŷ, y)
     opt = Flux.setup(Adam(1.0f-4), model)
 
     report(0, model, onetrainloader, onetestloader, lossfunction)

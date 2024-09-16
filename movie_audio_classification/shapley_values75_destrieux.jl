@@ -56,7 +56,7 @@ testtomask = (graphs[:, :, :, :, 401:end], labels[:, 401:end])
 
 for i in 1:15
     global d, graphs, labels, testtomask
-    model = create_model_destrieux(4, 5; classification="AR")
+    model = create_model_destrieux(4, 5; classification="MA")
     trainloader = Flux.DataLoader((graphs[:, :, :, :, 1:400], labels[:, 1:400]), batchsize=1, shuffle=true)
     onetrainloader = Flux.DataLoader((graphs[:, :, :, :, 1:400], labels[:, 1:400]), batchsize=400, shuffle=true)
     onetestloader = Flux.DataLoader((graphs[:, :, :, :, 401:end], labels[:, 401:end]), batchsize=96, shuffle=true)
