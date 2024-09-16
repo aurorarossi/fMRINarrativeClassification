@@ -10,7 +10,7 @@ import time
 
 
 
-names = np.loadtxt("files/to_process/to_process_schema1.txt", dtype="str")
+names = np.loadtxt("files/to_process/to_process_schema4.txt", dtype="str")
 
 # Load atlas
 
@@ -55,6 +55,6 @@ for name in names:
     _,_,c = name.split('/')
     
 
-    np.save(f"timeseries/schema-run1-100/{c}_timeseries_destrieux.npy",timeseries)
+    np.save(f"timeseries/schema-run4-100/{c}_timeseries_destrieux.npy",timeseries)
     endtime = time.time()
     print(f"time elapsed: {endtime-starttime}")
