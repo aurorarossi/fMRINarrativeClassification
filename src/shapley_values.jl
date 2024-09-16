@@ -2,7 +2,7 @@ using Combinatorics, Random
 include("../utils.jl")
 
 function mask(mygraph, maskedregions)
-    maskedregions = setdiff(collect(1:100), maskedregions)
+    maskedregions = setdiff(collect(1:size(mygraph,1)), maskedregions)
     mygraph[maskedregions, :, :, :] .= 0
     mygraph[:, maskedregions, :, :] .= 0
     return mygraph

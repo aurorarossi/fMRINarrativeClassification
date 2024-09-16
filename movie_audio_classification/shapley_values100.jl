@@ -54,7 +54,7 @@ end
 
 testtomask = (graphs[:, :, :, :, 401:end], labels[:, 401:end])
 
-for i in 1:5
+for i in 1:10
     global d, graphs, labels, testtomask
     model = create_model(4, 5; classification="MA")
     trainloader = Flux.DataLoader((graphs[:, :, :, :, 1:400], labels[:, 1:400]), batchsize=1, shuffle=true)
@@ -70,6 +70,6 @@ for i in 1:5
     model = model |> cpu
     d = compute_shapley_values(model, d, namesnetworks, testtomask)
 end
-jldsave("movie_audio_classification/data/shapleyvalues100_5retraining.jld2"; d)
+jldsave("movie_audio_classification/data/shapleyvalues100_10retraining.jld2"; d)
 
 

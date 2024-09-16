@@ -86,6 +86,52 @@ function load_schema_dataset(; classification)
     return graphs, labels
 end
 
+function load_schema_dataset_desikan(; classification)
+    names = load_names_file()
+    graphs = zeros(70, 70, 8, 1, 496)
+    k = 1
+    if classification == "4C"
+        read = readgraphs_4C!
+        numberlabels = 4
+    elseif classification == "AR"
+        read = readgraphs_AR!
+        numberlabels = 2
+    elseif classification == "MA"
+        read = readgraphs_MA!
+        numberlabels = 2
+    end
+    labels = zeros(numberlabels, 496)
+    for (i, name) in enumerate(names)
+        _, _, c = split(name, "/")
+        g = npzread("data/desikan/$(c)_network_desikan.npy")[:, :, 1:32]
+        graphs, labels, k = read(g, graphs, labels, k, c[25], c[1:7])
+    end
+    return graphs, labels
+end
+
+function load_schema_dataset_destrieux(; classification)
+    names = load_names_file()
+    graphs = zeros(75, 75, 8, 1, 496)
+    k = 1
+    if classification == "4C"
+        read = readgraphs_4C!
+        numberlabels = 4
+    elseif classification == "AR"
+        read = readgraphs_AR!
+        numberlabels = 2
+    elseif classification == "MA"
+        read = readgraphs_MA!
+        numberlabels = 2
+    end
+    labels = zeros(numberlabels, 496)
+    for (i, name) in enumerate(names)
+        _, _, c = split(name, "/")
+        g = npzread("data/desikan/$(c)_network_destrieux.npy")[:, :, 1:32]
+        graphs, labels, k = read(g, graphs, labels, k, c[25], c[1:7])
+    end
+    return graphs, labels
+end
+
 function eval_accuracy(model, data_loader)
     (x, y) = data_loader
     ŷ = model(x)

@@ -138,8 +138,8 @@ subnetwork_colors = Dict(
     legend_colors = [subnetwork_colors[:vis], subnetwork_colors[:somot], subnetwork_colors[:dorsattn], subnetwork_colors[:ventattn], subnetwork_colors[:limbic], subnetwork_colors[:control], subnetwork_colors[:default]]
 
         for (i, label) in enumerate(legend_labels)
-        scatter!(ax_legend, [0.1], [-i], color = legend_colors[i], markersize = 15)  # Reduce marker size
-        text!(ax_legend, [0.1], [-i], text = label, align=(:left,:center), offset = (10,0) )  # Adjust label position
+        scatter!(ax_legend, [0], [-i], color = legend_colors[i], markersize = 15)  # Reduce marker size
+        text!(ax_legend, [0], [-i], text = label, align=(:left,:center), offset = (10,0) )  # Adjust label position
     end
 
     display(fig)
@@ -149,4 +149,79 @@ subnetwork_colors = Dict(
 
 
     return fig
+end
+
+function shapvaluesrandom_plot(data,title,format)
+    CairoMakie.activate!(type = format)
+    data = data["d"]
+    networks = ["r1","r2","r3","r4","r5" , "r6", "r7"] 
+    networks_real_names = [L"Random 1$$", L"Random 2$$", L"Random 3$$", L"Random 4$$", L"Random 5$$", L"Random 6$$", L"Random 7$$"]
+
+    mean_values = Dict()
+    for key in ["r1","r2","r3","r4","r5" , "r6", "r7"]
+        mean_values[key] = mean(data[key])
+    end
+
+    std_values = Dict()
+    for key in ["r1","r2","r3","r4","r5" , "r6", "r7"]
+        std_values[key] = std(data[key])
+    end
+    shapvalues = [mean_values["r1"], mean_values["r2"], mean_values["r3"], mean_values["r4"], mean_values["r5"], mean_values["r6"], mean_values["r7"]]
+
+    std_values = [std_values["r1"], std_values["r2"], std_values["r3"], std_values["r4"], std_values["r5"], std_values["r6"], std_values["r7"]]
+
+    permsort = sortperm(shapvalues, rev = true)
+    color = categorical_colors(:RdBu_4, 4)
+    fontsize_theme = Theme(fontsize=20)
+set_theme!(fontsize_theme)
+    p = barplot(shapvalues[permsort],   
+    axis = (xticks = (1:7, networks_real_names[permsort]),yticks =(0:5:15, [L"0",L"5",L"10",L"15"]) ,xticklabelrotation=pi/9,xlabel = L"Random Subnetwork$$", ylabel = L"Shapley Value$$", title = title) ,legend = false, color = color[end] )
+    errorbars!(collect(1:7),shapvalues[permsort], std_values,  whiskerwidth = 10, color = :black)
+
+    display(p)
+
+    return p
+end
+
+
+function shapvalues_scatterplot(data,title,format)
+    CairoMakie.activate!(type = format)
+    data = data["d"]
+    networks = ["vis", "somot", "dorsattn", "ventattn", "limbic", "control", "default"] 
+    networks_real_names = [L"Visual$$", L"Somatomotor$$", L"""Dorsal Attention$$""", L"""Ventral Attention$$""", L"Limbic$$", L"Control$$", L"Default$$"]
+
+    mean_values = Dict()
+    for key in ["vis", "somot", "dorsattn", "ventattn", "limbic", "control", "default"]
+        mean_values[key] = mean(data[key])
+    end
+
+    std_values = Dict()
+    for key in ["vis", "somot", "dorsattn", "ventattn", "limbic", "control", "default"]
+        std_values[key] = std(data[key])
+    end
+    shapvalues = [data["vis"], data["somot"], data["dorsattn"], data["ventattn"], data["limbic"], data["control"], data["default"]]
+
+    shapvaluesmean = [mean_values["vis"], mean_values["somot"], mean_values["dorsattn"], mean_values["ventattn"], mean_values["limbic"], mean_values["control"], mean_values["default"]]
+    
+
+
+    std_values = [std_values["vis"], std_values["somot"], std_values["dorsattn"], std_values["ventattn"], std_values["limbic"], std_values["control"], std_values["default"]]
+
+    permsort = sortperm(shapvaluesmean, rev = true)
+    color = categorical_colors(:RdBu_4, 4)
+    fontsize_theme = Theme(fontsize=20)
+    set_theme!(fontsize_theme)
+    x = []
+    for i in 1:7
+        push!(x, ones(size(shapvalues[permsort[i]])) * i)
+    end
+    x = vcat(x...)
+    y = Float32.(vcat(shapvalues[permsort]...))
+    p = scatter(x,y, axis = (xticks = (1:7, networks_real_names[permsort]),yticks =(0:5:15, [L"0",L"5",L"10",L"15"]) ,xticklabelrotation=pi/9,xlabel = L"Subnetwork$$", ylabel = L"Shapley Value$$", title = title) ,legend = false, color = color[end] )
+    scatter!(1:7, shapvaluesmean[permsort], color = :red, markersize = 20, marker=:hline, label = "Mean Values")
+   # errorbars!(collect(1:7),shapvalues[permsort], std_values,  whiskerwidth = 10, color = :black)
+    println(shapvaluesmean[permsort])
+    display(p)
+
+    return p
 end
