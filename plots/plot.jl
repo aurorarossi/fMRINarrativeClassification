@@ -225,3 +225,48 @@ function shapvalues_scatterplot(data,title,format)
 
     return p
 end
+
+function shapvaluesdesikan_plot(data,title,format)
+ 
+
+
+    CairoMakie.activate!(type = format)
+    data = data["d"]
+    networks = [string(i) for i in 1:70]
+    networks_real_names = [string(i) for i in 1:70]
+
+    mean_values = Dict()
+    for key in networks
+        mean_values[key] = mean(data[key])
+    end
+
+    std_values = Dict()
+    for key in networks
+        std_values[key] = std(data[key])
+    end
+    shapvalues = [mean_values[string(i)] for i in 1:70]
+
+    std_values = [std_values[string(i)] for i in 1:70]
+
+    permsort = sortperm(shapvalues, rev = true)
+
+    color = categorical_colors(:RdBu_4, 4)
+    fontsize_theme = Theme(fontsize=20)
+    set_theme!(fontsize_theme)
+    fig = Figure(size = (1400, 600))
+    
+    # Create a subplot for the main plot
+    ax = Axis(fig[1, 1], title = title, xticks = (1:70, networks_real_names[permsort]), 
+              yticks = (0:1:6, [L"0", L"1", L"2", L"3", L"4", L"5", L"6"]),
+              xticklabelrotation = pi/2, xticklabelsize = 12, xlabel = L"Desikan brain regions$$", ylabel = L"Shapley Value$$")
+    
+    barplot!(ax, shapvalues[permsort], color = color[end])
+    errorbars!(ax, collect(1:70), shapvalues[permsort], std_values, whiskerwidth = 10, color = :black)
+
+    display(fig)
+
+
+
+
+    return fig
+end
