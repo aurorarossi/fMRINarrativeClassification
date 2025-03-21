@@ -44,6 +44,7 @@ function compute_shapley_values(model, d, namesnetworks, testtomask)
 end
 
 graphs, labels = load_schema_dataset(classification="AR")
+graphs = (graphs .- mean(graphs))./ std(graphs)
 
 d = Dict{String,Any}()
 d["MODEL"] = []
@@ -54,7 +55,7 @@ end
 
 testtomask = (graphs[:, :, :, :, 401:end], labels[:, 401:end])
 
-for i in 1:10
+for i in 1:15
     global d, graphs, labels, testtomask
     model = create_model(8, 1; classification="AR")
     trainloader = Flux.DataLoader((graphs[:, :, :, :, 1:400], labels[:, 1:400]), batchsize=1, shuffle=true)
@@ -70,6 +71,6 @@ for i in 1:10
     model = model |> cpu
     d = compute_shapley_values(model, d, namesnetworks, testtomask)
 end
-jldsave("airport_restaurant_classification/data/shapleyvalues100_10retraining.jld2"; d)
+jldsave("airport_restaurant_classification/data/shapleyvalues100_15retraining_normalized.jld2"; d)
 
 

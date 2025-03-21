@@ -1,6 +1,6 @@
 using CUDA, Statistics, Random
-include("utils.jl")
-include("src/model.jl")
+include("../utils.jl")
+include("../src/model.jl")
 
 function train(model, d; numberofepochs=50, trainloader, onetrainloader, onetestloader)
 
@@ -38,6 +38,7 @@ end
 
 
     graphs, labels = load_schema_dataset(classification="MA")
+    graphs = (graphs .- mean(graphs))./ std(graphs)
 
     d = Dict{String,Any}()
     d["MODEL"] = []
@@ -76,4 +77,4 @@ end
 
     end
     
-    JLD2.@save "movie_audio_classification/data/train_7.jld2" d
+    JLD2.@save "movie_audio_classification/data/train_7_znormalization.jld2" d

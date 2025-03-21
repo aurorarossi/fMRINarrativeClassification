@@ -44,6 +44,7 @@ function compute_shapley_values(model, d, namesnetworks, testtomask)
 end
 
 graphs, labels = load_schema_dataset_desikan(classification="4C")
+graphs = (graphs .- mean(graphs))./ std(graphs)
 
 d = Dict{String,Any}()
 d["MODEL"] = []
@@ -70,5 +71,5 @@ for i in 1:15
     model = model |> cpu
     d = compute_shapley_values(model, d, namesnetworks, testtomask)
 end
-jldsave("4_classification/data/shapleyvalues70_desikan_15retraining.jld2"; d)
+jldsave("4_classification/data/shapleyvalues70_desikan_15retraining_normalized.jld2"; d)
 

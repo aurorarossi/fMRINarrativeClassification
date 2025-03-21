@@ -53,14 +53,15 @@ function compute_shapley_values(model, d, namesnetworks17, testtomask)
 
     testtomaskdeepcopy = deepcopy(testtomask[1])
     for (i, name) in enumerate(namesnetworks17)
-        shap = approximate_shaply_value_of_i(i, model, networks17, testtomask, testtomaskdeepcopy,500)
+        shap = approximate_shaply_value_of_i(i, model, networks17, testtomask, testtomaskdeepcopy,100)
         println(shap)
         push!(d[name], shap)
     end
     return d
 end
 
-graphs, labels = load_schema_dataset(classification="AR")
+graphs, labels = load_schema_dataset17(classification="AR")
+graphs = (graphs .- mean(graphs))./ std(graphs)
 
 d = Dict{String,Any}()
 d["MODEL"] = []
@@ -87,6 +88,6 @@ for i in 1:15
     model = model |> cpu
     d = compute_shapley_values(model, d, namesnetworks17, testtomask)
 end
-jldsave("airport_restaurant_classification/data/shapleyvalues17_15retraining_500sample.jld2"; d)
+jldsave("airport_restaurant_classification/data/shapleyvalues17_15retraining_normalized.jld2"; d)
 
 

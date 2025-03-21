@@ -1,7 +1,7 @@
 using CUDA, Statistics, JLD2
-include("utils.jl")
-include("src/model.jl")
-include("src/shapley_values.jl")
+include("../utils.jl")
+include("../src/model.jl")
+include("../src/shapley_values.jl")
 
 function train(model, d; numberofepochs=50, trainloader, onetrainloader, onetestloader)
 
@@ -60,7 +60,8 @@ function compute_shapley_values(model, d, namesnetworks17, testtomask)
     return d
 end
 
-graphs, labels = load_schema_dataset(classification="MA")
+graphs, labels = load_schema_dataset17(classification="MA")
+graphs = (graphs .- mean(graphs))./ std(graphs)
 
 d = Dict{String,Any}()
 d["MODEL"] = []
@@ -87,6 +88,6 @@ for i in 1:15
     model = model |> cpu
     d = compute_shapley_values(model, d, namesnetworks17, testtomask)
 end
-jldsave("movie_audio_classification/data/shapleyvalues17_15retraining.jld2"; d)
+jldsave("movie_audio_classification/data/shapleyvalues17_15retraining_normalized.jld2"; d)
 
 
