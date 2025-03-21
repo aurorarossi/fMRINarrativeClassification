@@ -126,7 +126,7 @@ function load_schema_dataset_destrieux(; classification)
     labels = zeros(numberlabels, 496)
     for (i, name) in enumerate(names)
         _, _, c = split(name, "/")
-        g = npzread("data/desikan/$(c)_network_destrieux.npy")[:, :, 1:32]
+        g = npzread("data/destrieux/$(c)_network_destrieux.npy")[:, :, 1:32]
         graphs, labels, k = read(g, graphs, labels, k, c[25], c[1:7])
     end
     return graphs, labels
