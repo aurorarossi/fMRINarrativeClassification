@@ -96,7 +96,7 @@ subnetwork_colors = Dict(
 
 
     CairoMakie.activate!(type = format)
-    #data = data["d"]
+    data = data["d"]
     networks = [string(i) for i in 1:100]
     networks_real_names =[string(i) for i in 1:100]
 
@@ -118,7 +118,7 @@ subnetwork_colors = Dict(
     region_colors = [subnetwork_colors[region_to_subnetwork[i]] for i in permsort]
     fontsize_theme = Theme(fontsize=20)
     set_theme!(fontsize_theme)
-    fig = Figure(size = (1400, 600))
+    fig = Figure(size = (1600, 600))
     
     # Create a subplot for the main plot
     ax = Axis(fig[1, 1], title = title, xticks = (1:100, networks_real_names[permsort]), 

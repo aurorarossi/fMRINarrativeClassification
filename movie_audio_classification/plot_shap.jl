@@ -36,13 +36,13 @@ save("movie_audio_classification/plots/shapleyvalues17_15retrainingMA_normalized
 # d10 = data100_10["d"]
 
 # data100 = Dict(key => vcat(d5[key], d10[key]) for key in keys(d5))
+data100 = load("movie_audio_classification/data/shapleyvalues100_15retraining_normalized.jld2")
+p100 = shapvalues100_plot(data100, L"Modality classification$$","png")
+save("movie_audio_classification/plots/shapleyvalues100_15retrainingMA_normalized.png", p100)
 
-# p100 = shapvalues100_plot(data100, L"Modality classification$$","png")
-# save("movie_audio_classification/plots/shapleyvalues100_15retrainingMA.png", p100)
-
-# datadesikan = load("movie_audio_classification/data/shapleyvalues70_desikan_15retraining.jld2")
-# pdesikan = shapvaluesdesikan_plot(datadesikan, L"Modality classification$$","png")
-# save("movie_audio_classification/plots/shapleyvalues70_desikan_15retrainingMA.png", pdesikan)
+datadesikan = load("movie_audio_classification/data/shapleyvalues70_desikan_15retraining_normalized.jld2")
+pdesikan = shapvaluesdesikan_plot(datadesikan, L"Modality classification$$","png")
+save("movie_audio_classification/plots/shapleyvalues70_desikan_15retrainingMA_normalized.png", pdesikan)
 
 # datadestrieux = load("movie_audio_classification/data/shapleyvalues75_destrieux_15retraining.jld2")
 # pdestrieux = shapvaluesdestrieux_plot(datadestrieux, L"Modality classification$$","png")

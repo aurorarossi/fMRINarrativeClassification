@@ -16,13 +16,13 @@ save("4_classification/plots/shapleyvalues17_15retraining4C_normalized.png",p17)
 # d10= data100_10["d"]
 
 # data100 = Dict(key => vcat(d5[key],d10[key]) for key in keys(d5))
+data100 = load("4_classification/data/shapleyvalues100_15retraining_normalized.jld2")
+p100 = shapvalues100_plot(data100,L"Combined Modality and Content classification$$","png")
+save("4_classification/plots/shapleyvalues100_15retraining4C_normalized.png",p100)
 
-# p100 = shapvalues100_plot(data100,L"Combined Modality and Content classification$$","png")
-# save("4_classification/plots/shapleyvalues100_15retraining4C.png",p100)
-
-# datadesikan = load("4_classification/data/shapleyvalues70_desikan_15retraining.jld2")
-# pdesikan = shapvaluesdesikan_plot(datadesikan, L"Combined Modality and Content classification$$","png")
-# save("4_classification/plots/shapleyvalues70_desikan_15retraining4C.png",pdesikan)
+datadesikan = load("4_classification/data/shapleyvalues70_desikan_15retraining_normalized.jld2")
+pdesikan = shapvaluesdesikan_plot(datadesikan, L"Combined Modality and Content classification$$","png")
+save("4_classification/plots/shapleyvalues70_desikan_15retraining4C_normalized.png",pdesikan)
 
 # datadestrieux = load("4_classification/data/shapleyvalues75_destrieux_15retraining.jld2")
 # pdestrieux = shapvaluesdestrieux_plot(datadestrieux, L"Combined Modality and Content classification$$","png")
