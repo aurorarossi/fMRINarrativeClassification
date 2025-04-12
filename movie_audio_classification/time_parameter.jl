@@ -1,8 +1,8 @@
 using CUDA, Statistics, Random
-include("utils.jl")
-include("src/model.jl")
+include("../utils.jl")
+include("../src/model.jl")
 
-function train(model, d; numberofepochs=50, trainloader, onetrainloader, onetestloader)
+function train(model, d; numberofepochs=20, trainloader, onetrainloader, onetestloader)
 
     lossfunction(ŷ, y) = Flux.logitbinarycrossentropy(ŷ, y)
     opt = Flux.setup(Adam(1.0f-4), model)
@@ -38,6 +38,7 @@ end
 
 
     graphs, labels = load_schema_dataset(classification="MA")
+    graphs = (graphs .- mean(graphs))./ std(graphs)
     combs = [(1,8),(2,7),(3,6),(4,5),(5,4),(6,3),(7,2),(8,1)]
 
     for (dim1,dim2) in combs
@@ -78,5 +79,5 @@ end
 
     end
     
-    JLD2.@save "movie_audio_classification/data/train_7_$(dim1)_$(dim2).jld2" d
+    JLD2.@save "movie_audio_classification/data/train_7_$(dim1)_$(dim2)_normalized.jld2" d
 end
